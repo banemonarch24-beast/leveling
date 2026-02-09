@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shadow Monarch's Ascension</title>
+  <style>
+    body { 
+      font-family: 'Courier New', monospace; 
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a); 
+      color: #e0e0e0; 
+      padding: 20px; 
+      margin: 0; 
+      overflow-x: hidden;
+    }
+    h1, h2 { 
+      color: #0099ff; 
+      text-shadow: 0 0 10px #0099ff, 0 0 20px #0099ff; 
+      text-align: center; 
+      margin-bottom: 20px;
+    }
+    .box { 
+      border: 2px solid #333; 
+      padding: 20px; 
+      margin-bottom: 20px; 
+      background: rgba(20, 20, 20, 0.8); 
+      border-radius: 10px; 
+      box-shadow: 0 0 15px rgba(255, 69, 0, 0.3); 
+      position: relative;
+    }
+    .box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #0099ff, #0099ff);
+      border-radius: 10px 10px 0 0;
+    }
+    label { 
+      display: block; 
+      margin: 8px 0; 
+      cursor: pointer;
+    }
+    input[type="checkbox"] { 
+      margin-right: 10px; 
+      accent-color: #ff4500;
+    }
+    button { 
+      margin: 5px; 
+      padding: 8px 12px; 
+      cursor: pointer; 
+      background: #333; 
+      color: #e0e0e0; 
+      border: 1px solid #555; 
+      border-radius: 5px; 
+      transition: background 0.3s;
+    }
+    button:hover { 
+      background: #ff4500; 
+      color: #000;
+    }
+    .plus { 
+      color: #0f0; 
+      font-weight: bold; 
+      margin-left: 10px; 
+      cursor: pointer; 
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+    .plus:hover { 
+      color: #00ff00; 
+      text-shadow: 0 0 5px #00ff00;
+    }
+    .danger { 
+      background: #800; 
+      color: #fff; 
+      border: 1px solid #a00; 
+      box-shadow: 0 0 10px #a00;
+    }
+    .danger:hover { 
+      background: #a00; 
+      box-shadow: 0 0 15px #a00;
+    }
+    #remarkInput { 
+      width: 80%; 
+      padding: 8px; 
+      background: #222; 
+      color: #e0e0e0; 
+      border: 1px solid #555; 
+      border-radius: 5px;
+    }
+    ul { 
+      list-style-type: none; 
+      padding: 0;
+    }
+    li { 
+      background: #333; 
+      margin: 5px 0; 
+      padding: 8px; 
+      border-radius: 5px; 
+      border-left: 5px solid #0099ff;
+    }
+    .stat-row { 
+      display: flex; 
+      align-items: center; 
+      margin: 5px 0;
+    }
+    .stat-label { 
+      flex: 1;
+    }
+    .stat-value { 
+      font-weight: bold; 
+      color: #0099ff;
+    }
+    .progress-bar { 
+      width: 100%; 
+      height: 20px; 
+      background: #333; 
+      border-radius: 10px; 
+      overflow: hidden; 
+      margin: 10px 0;
+    }
+    .progress-fill { 
+      height: 100%; 
+      background: linear-gradient(90deg, #006eb8, #0099ff); 
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🗡️ Shadow Monarch's Ascension</h1>
+
+<div class="box">
+  <h2>🏹 Hunter Profile</h2>
+  Level: <span id="level"></span><br>
+  XP: <span id="xp"></span> / <span id="xpNext"></span>
+  <div class="progress-bar">
+    <div class="progress-fill" id="xpBar" style="width: 0%;"></div>
+  </div>
+</div>
+
+<div class="box" id="statPointsBox" style="display:none">
+  ⭐ Free Stat Points: <span id="statPoints"></span>
+</div>
+
+<div class="box">
+  <h2>⚔️ Attributes</h2>
+  <div class="stat-row">
+    <span class="stat-label">Strength:</span>
+    <span class="stat-value" id="strength"></span>
+    <span class="plus" onclick="addStat('strength')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Academic Intelligence:</span>
+    <span class="stat-value" id="aInt"></span>
+    <span class="plus" onclick="addStat('aInt')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Intelligence:</span>
+    <span class="stat-value" id="int"></span>
+    <span class="plus" onclick="addStat('int')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">KC:</span>
+    <span class="stat-value" id="kc"></span>
+    <span class="plus" onclick="addStat('kc')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Consistency:</span>
+    <span class="stat-value" id="cons"></span>
+    <span class="plus" onclick="addStat('cons')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Focus:</span>
+    <span class="stat-value" id="focus"></span>
+    <span class="plus" onclick="addStat('focus')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Discipline:</span>
+    <span class="stat-value" id="disc"></span>
+    <span class="plus" onclick="addStat('disc')">+</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">Creativity:</span>
+    <span class="stat-value" id="cre"></span>
+    <span class="plus" onclick="addStat('cre')">+</span>
+  </div>
+</div>
+ 
+<div class="box">
+  <h2>🧠 Skills</h2>
+
+  <ul>
+    <li id="skill-perception"></li>
+    <li id="skill-observation"></li>
+    <li id="skill-flow"></li>
+    <li id="skill-memory"></li>
+  </ul>
+</div>
+
+
+
+<div class="box">
+  <h2>📜 Daily Missions</h2>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,20,{kc:2})"> Read Bhagavad Gita</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,30,{aInt:1,focus:1})"> Active Recall </label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,35,{strength:2})"> Workout</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,25,{focus:1,disc:1,kc:1})"> Meditation</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,10,{focus:1,disc:1})"> Sandhiyaavandhanam</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,15,{aInt:1,disc:1})"> Homeworks</label>
+   <label><input type="checkbox" class="daily" onclick="handleQuest(this,30,{disc:1, cons:1})"> Wash the Dishes</label>
+   <label><input type="checkbox" class="daily" onclick="handleQuest(this,20,{disc:1, cons:1})"> Clean the Home</label>
+</div>
+
+<div class="box">
+  <h2>🔥 Side Quests</h2>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,45,{int:1,focus:1})"> Chess</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,40,{int:1})"> Research</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,30,{cre:1})"> Reading</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,45,{cre:1})"> Guitar</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,45,{cre:1})"> Sketch</label>
+  <label><input type="checkbox" class="daily" onclick="handleQuest(this,35,{strength:1})"> Table Tennis</label>
+</div>
+
+<div class="box">
+  <h2>📝 Hunter's Log</h2>
+
+  <input type="text" id="remarkInput"
+  placeholder="Log today's conquests..."
+  style="width:80%; padding:6px;">
+
+  <button onclick="addRemark()">Record</button>
+
+  <ul id="remarksList" style="margin-top:10px;"></ul>
+</div>
+
+
+<div class="box">
+  <h2>⚠️ Curses & Penalties</h2>
+  <button class="danger" onclick="penalty({focus:-1})">Brawl Stars Distraction (Focus −1)</button>
+  <button class="danger" onclick="penalty({focus:-1,disc:-1})">Brawl Stars > 1hr 30 (Focus −1, Discipline −1)</button>
+  <button class="danger" onclick="smut()">Smut (Level −2, Focus −2)</button>
+</div>
+
+<script>
+/* ---------- ONE-TIME HARD RESET ---------- */
+if(!localStorage.getItem("RESET_DONE")){
+  localStorage.clear();
+  localStorage.setItem("RESET_DONE","true");
+}
+
+/* ---------- DATA ---------- */
+let stats = JSON.parse(localStorage.getItem("stats")) || {
+  level:1,
+  xp:0,
+  xpNext:250,
+  statPoints:0,
+  strength:2, aInt:3, int:1, kc:4,
+  cons:1, focus:4, disc:3, cre:1
+};
+
+/* ---------- QUEST HANDLER ---------- */
+function handleQuest(box, xpGain, changes){
+  if(!box.checked) return;
+  quest(xpGain, changes);
+}
+
+/* ---------- QUEST ---------- */
+function quest(xpGain, changes){
+  stats.xp += xpGain;
+  for(let c in changes){
+    stats[c] += changes[c];
+  }
+  levelCheck();
+  updateUI();
+}
+
+/* ---------- STAT ALLOCATION ---------- */
+function addStat(stat){
+  if(stats.statPoints <= 0) return;
+  stats[stat]++;
+  stats.statPoints--;
+  updateUI();
+}
+
+/* ---------- PENALTIES ---------- */
+function penalty(changes){
+  for(let c in changes){
+    stats[c] = Math.max(0, stats[c] + changes[c]);
+  }
+  updateUI();
+}
+
+function smut(){
+  stats.level = Math.max(1, stats.level - 2);
+  stats.focus = Math.max(0, stats.focus - 2);
+  alert("🚫 Smut detected!\nTV denied next day.");
+  updateUI();
+}
+
+/* ---------- LEVEL UP ---------- */
+function levelCheck(){
+  if(stats.xp >= stats.xpNext){
+    stats.level++;
+    stats.xp -= stats.xpNext;
+    stats.statPoints += 3;
+    alert("🆙 LEVEL UP! +3 Free Stat Points");
+  }
+}
+
+/* ---------- DAILY RESET ---------- */
+function today(){
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function dailyReset(){
+  const lastDay = localStorage.getItem("lastDay");
+  const now = today();
+  if(lastDay !== now){
+    document.querySelectorAll(".daily").forEach(cb => cb.checked = false);
+    localStorage.setItem("lastDay", now);
+  }
+}
+function calcSkill(levelStat, step){
+  return Math.floor(levelStat / step);
+}
+
+function updateSkills(){
+  const perception = calcSkill(stats.int, 10);
+  const observation = calcSkill(stats.focus, 10);
+  const flow = calcSkill(stats.focus, 5);
+  const memory = calcSkill(stats.aInt, 5);
+
+  document.getElementById("skill-perception").innerText =
+    `Perception ${perception} (${perception + 1} at INT ${(perception + 1) * 10})`;
+
+  document.getElementById("skill-observation").innerText =
+    `Observation ${observation} (${observation + 1} at Focus ${(observation + 1) * 10})`;
+
+  document.getElementById("skill-flow").innerText =
+    `Flow State ${flow} (${flow + 1} at Focus ${(flow + 1) * 5})`;
+
+  document.getElementById("skill-memory").innerText =
+    `Memory ${memory} (${memory + 1} at A-Int ${(memory + 1) * 5})`;
+}
+
+
+/* ---------- UI ---------- */
+function updateUI(){
+  for(let k in stats){
+    let el = document.getElementById(k);
+    if(el) el.innerText = stats[k];
+  }
+
+  document.getElementById("statPointsBox").style.display =
+    stats.statPoints > 0 ? "block" : "none";
+
+  document.querySelectorAll(".plus").forEach(p=>{
+    p.style.display = stats.statPoints > 0 ? "inline" : "none";
+  });
+
+  // Update XP progress bar
+  const xpBar = document.getElementById("xpBar");
+  const xpPercent = (stats.xp / stats.xpNext) * 100;
+  xpBar.style.width = xpPercent + "%";
+
+  localStorage.setItem("stats", JSON.stringify(stats));
+  updateSkills();
+
+}
+let remarks = JSON.parse(localStorage.getItem("remarks")) || [];
+
+function addRemark(){
+  const input = document.getElementById("remarkInput");
+  const text = input.value.trim();
+  if(!text) return;
+
+  remarks.unshift(text); // newest on top
+  input.value = "";
+  saveRemarks();
+  renderRemarks();
+}
+
+function renderRemarks(){
+  const list = document.getElementById("remarksList");
+  list.innerHTML = "";
+
+  remarks.forEach(r=>{
+    const li = document.createElement("li");
+    li.innerText = r;
+    list.appendChild(li);
+  });
+}
+
+function saveRemarks(){
+  localStorage.setItem("remarks", JSON.stringify(remarks));
+}
+/* ---------- INIT ---------- */
+dailyReset();
+updateUI();
+renderRemarks();
+
+</script>
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
